@@ -1,0 +1,13 @@
+inboxmove:
+  inbound:
+    - id: "i1"
+      url: "imaps://your-imap-source/INBOX"
+      username: "your-user@your-imap-source"
+      password: "whooo-secret"
+      outbound-reference: "o1"
+  outbound:
+    - id: "o1"
+      url: "imap://your-imap-destination"
+      username: "your-user@your-imap-destination"
+      password: "top-secret"
+      folder-name: "INBOX"
