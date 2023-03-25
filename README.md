@@ -23,7 +23,7 @@ into the container:
 ```
 version: "3"
 services:
-  imapmove:
+  inboxmove:
     image: ghcr.io/f466162/inboxmove:main
     restart: unless-stopped
     environment:
