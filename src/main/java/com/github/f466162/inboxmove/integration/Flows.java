@@ -21,7 +21,7 @@ public class Flows {
                 .from(Mail.imapIdleAdapter(config.getUrl())
                         .javaMailAuthenticator(new ImapAuthenticator(config.getUsername(), config.getPassword()))
                         .simpleContent(true)
-                        .javaMailProperties(p -> p.put("mail.debug", config.isDebug())))
+                        .javaMailProperties(Configuration.getJakartaMailProperties(config)))
                 .enrichHeaders(h -> h.correlationId(UUID.randomUUID().toString()))
                 .enrichHeaders(h -> h.header(Constants.INBOUND_URL, config.getUrl()))
                 .enrichHeaders(h -> h.header(Constants.OUTBOUND_URL, outboundConfig.getUrl()))
@@ -41,11 +41,7 @@ public class Flows {
         return IntegrationFlow
                 .from(MessageChannels.queue(getChannelName(Direction.OUT, config.getId()), 1))
                 .handle(ImapOutboundMessageHandler.builder()
-                        .url(config.getUrl())
-                        .username(config.getUsername())
-                        .password(config.getPassword())
-                        .folderName(config.getFolderName())
-                        .debug(String.valueOf(config.isDebug()))
+                        .config(config)
                         .build()
                 )
                 .get();

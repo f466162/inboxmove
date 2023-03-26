@@ -33,3 +33,4 @@ build/
 .vscode/
 
 personal.yaml
+/src/main/resources/application-dev.yaml

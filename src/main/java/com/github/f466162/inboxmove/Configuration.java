@@ -1,19 +1,18 @@
 package com.github.f466162.inboxmove;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.integration.support.PropertiesBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Component
 @ConfigurationProperties(prefix = "inboxmove", ignoreUnknownFields = false)
@@ -46,6 +45,17 @@ public class Configuration {
         private String folderName = "INBOX";
     }
 
+    public static Properties getJakartaMailProperties(Connection config) {
+        return new PropertiesBuilder()
+                .put("mail.debug", String.valueOf(config.isDebug()))
+                .put("mail.imap.starttls.enable", config.isStartTLS())
+                .put("mail.imap.starttls.require", config.isRequireTLS())
+                .put("mail.imap.minidletime", config.getMinIdleTime())
+                .put("mail.imap.appendbuffersize", config.getAppendBufferSize())
+                .put("mail.imap.connectiontimeout", config.getConnectionTimeout())
+                .put("mail.imap.timeout", config.getTimeout()).get();
+    }
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
@@ -62,6 +72,18 @@ public class Configuration {
         private String password;
         @NotNull
         private boolean debug = false;
+        @NotNull
+        private boolean startTLS = true;
+        @NotNull
+        private boolean requireTLS = true;
+        @Min(1)
+        private int minIdleTime = 1000;
+        @Min(1)
+        private int connectionTimeout = 60_000;
+        @Min(1)
+        private int timeout = 120_000;
+        @Min(1)
+        private int appendBufferSize = 1024 * 1024;
     }
 }
 

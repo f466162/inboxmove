@@ -1,5 +1,6 @@
 package com.github.f466162.inboxmove.imap;
 
+import com.github.f466162.inboxmove.Configuration;
 import com.github.f466162.inboxmove.Constants;
 import com.sun.mail.imap.IMAPStore;
 import jakarta.mail.*;
@@ -9,7 +10,6 @@ import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.handler.AbstractMessageHandler;
-import org.springframework.integration.support.PropertiesBuilder;
 import org.springframework.messaging.Message;
 
 import java.util.Objects;
@@ -19,11 +19,8 @@ import java.util.Properties;
 @AllArgsConstructor
 @Builder
 public class ImapOutboundMessageHandler extends AbstractMessageHandler {
-    private String url;
-    private String username;
-    private String password;
-    private String folderName;
-    private String debug;
+
+    private Configuration.Outbound config;
 
     @Override
     public String getComponentType() {
@@ -32,20 +29,16 @@ public class ImapOutboundMessageHandler extends AbstractMessageHandler {
 
     @Override
     protected void handleMessageInternal(Message<?> message) {
-        URLName urlName = new URLName(url);
-        Properties properties = new PropertiesBuilder()
-                .put("mail.imap.starttls.enable", "true")
-                .put("mail.imap.starttls.require", "true")
-                .put("mail.debug", debug)
-                .get();
+        URLName urlName = new URLName(config.getUrl());
+        Properties properties = Configuration.getJakartaMailProperties(config);
         ImapAuthenticator authenticator = ImapAuthenticator
-                .getInstance(username, password);
+                .getInstance(config.getUsername(), config.getPassword());
         Session session = Session.getInstance(properties, authenticator);
 
         MDC.put(Constants.ID, Objects.requireNonNull(message.getHeaders().getId()).toString());
         MDC.put(Constants.CORRELATION_ID, String.valueOf(message.getHeaders().get(IntegrationMessageHeaderAccessor.CORRELATION_ID)));
-        MDC.put(Constants.OUTBOUND_URL, url);
-        MDC.put(Constants.OUTBOUND_FOLDER, folderName);
+        MDC.put(Constants.OUTBOUND_URL, config.getUrl());
+        MDC.put(Constants.OUTBOUND_FOLDER, config.getFolderName());
 
         try (IMAPStore store = (IMAPStore) session.getStore(urlName)) {
             if (!store.isConnected()) {
@@ -60,7 +53,7 @@ public class ImapOutboundMessageHandler extends AbstractMessageHandler {
                 logger.debug("Opening folder");
             }
 
-            Folder folder = store.getFolder(folderName);
+            Folder folder = store.getFolder(config.getFolderName());
 
             if (!folder.exists()) {
                 logger.info("Creating Folder on IMAP account");
