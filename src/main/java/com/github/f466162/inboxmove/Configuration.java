@@ -53,7 +53,8 @@ public class Configuration {
                 .put("mail.imap.minidletime", config.getMinIdleTime())
                 .put("mail.imap.appendbuffersize", config.getAppendBufferSize())
                 .put("mail.imap.connectiontimeout", config.getConnectionTimeout())
-                .put("mail.imap.timeout", config.getTimeout()).get();
+                .put("mail.imap.timeout", config.getTimeout())
+                .put("mail.imap.writetimeout", config.getWriteTimeout()).get();
     }
 
     @NoArgsConstructor
@@ -77,11 +78,13 @@ public class Configuration {
         @NotNull
         private boolean requireTLS = true;
         @Min(1)
-        private int minIdleTime = 1000;
+        private int minIdleTime = 10;
         @Min(1)
         private int connectionTimeout = 60_000;
         @Min(1)
         private int timeout = 120_000;
+        @Min(1)
+        private int writeTimeout = 120_000;
         @Min(1)
         private int appendBufferSize = 1024 * 1024;
     }
