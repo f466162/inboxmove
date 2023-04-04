@@ -62,6 +62,7 @@ public class ImapOutboundMessageHandler extends AbstractMessageHandler {
 
             jakarta.mail.Message mailMessage = (jakarta.mail.Message) message.getPayload();
             mailMessage.setFlag(Flags.Flag.SEEN, false);
+            mailMessage.addHeader(Constants.X_IMAPMOVE_CORRELATION_ID, message.getHeaders().get(Constants.CORRELATION_ID, String.class));
             String messageId = mailMessage.getHeader(Constants.MAIL_MESSAGE_ID)[0];
 
             MDC.put(Constants.MESSAGE_ID, messageId);

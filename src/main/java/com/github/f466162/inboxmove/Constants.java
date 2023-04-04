@@ -14,4 +14,5 @@ public class Constants {
     public static final String OUTBOUND_FLOW = "outboundFlow";
     public static final String INBOUND_FLOW = "inboundFlow";
     public static final String UNUSED_OUTBOUND_FLOWS = "unusedOutboundFlows";
+    public static final String X_IMAPMOVE_CORRELATION_ID = "X-IMAPmove-Correlation-Id";
 }
