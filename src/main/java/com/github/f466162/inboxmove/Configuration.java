@@ -54,7 +54,8 @@ public class Configuration {
                 .put("mail.imap.appendbuffersize", config.getAppendBufferSize())
                 .put("mail.imap.connectiontimeout", config.getConnectionTimeout())
                 .put("mail.imap.timeout", config.getTimeout())
-                .put("mail.imap.writetimeout", config.getWriteTimeout()).get();
+                .put("mail.imap.writetimeout", config.getWriteTimeout())
+                .get();
     }
 
     @NoArgsConstructor

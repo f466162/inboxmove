@@ -37,8 +37,10 @@ public class ImapOutboundMessageHandler extends AbstractMessageHandler {
 
         MDC.put(Constants.ID, Objects.requireNonNull(message.getHeaders().getId()).toString());
         MDC.put(Constants.CORRELATION_ID, String.valueOf(message.getHeaders().get(IntegrationMessageHeaderAccessor.CORRELATION_ID)));
-        MDC.put(Constants.OUTBOUND_URL, config.getUrl());
-        MDC.put(Constants.OUTBOUND_FOLDER, config.getFolderName());
+        MDC.put(Constants.INBOUND_URL, message.getHeaders().get(Constants.INBOUND_URL, String.class));
+        MDC.put(Constants.INBOUND_USERNAME, message.getHeaders().get(Constants.INBOUND_USERNAME, String.class));
+        MDC.put(Constants.OUTBOUND_URL, message.getHeaders().get(Constants.OUTBOUND_URL, String.class));
+        MDC.put(Constants.OUTBOUND_USERNAME, message.getHeaders().get(Constants.OUTBOUND_USERNAME, String.class));
 
         try (IMAPStore store = (IMAPStore) session.getStore(urlName)) {
             if (!store.isConnected()) {

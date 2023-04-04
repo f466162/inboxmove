@@ -24,12 +24,15 @@ public class Flows {
                         .javaMailProperties(Configuration.getJakartaMailProperties(config)))
                 .enrichHeaders(h -> h.correlationId(UUID.randomUUID().toString()))
                 .enrichHeaders(h -> h.header(Constants.INBOUND_URL, config.getUrl()))
+                .enrichHeaders(h -> h.header(Constants.INBOUND_USERNAME, config.getUsername()))
                 .enrichHeaders(h -> h.header(Constants.OUTBOUND_URL, outboundConfig.getUrl()))
                 .enrichHeaders(h -> h.header(Constants.OUTBOUND_USERNAME, outboundConfig.getUsername()))
                 .log(LoggingHandler.Level.INFO, message -> {
                     MDC.put(Constants.ID, Objects.requireNonNull(message.getHeaders().getId()).toString());
                     MDC.put(Constants.INBOUND_URL, message.getHeaders().get(Constants.INBOUND_URL, String.class));
+                    MDC.put(Constants.INBOUND_USERNAME, message.getHeaders().get(Constants.INBOUND_USERNAME, String.class));
                     MDC.put(Constants.OUTBOUND_URL, message.getHeaders().get(Constants.OUTBOUND_URL, String.class));
+                    MDC.put(Constants.OUTBOUND_USERNAME, message.getHeaders().get(Constants.OUTBOUND_USERNAME, String.class));
                     MDC.put(Constants.CORRELATION_ID, message.getHeaders().get(IntegrationMessageHeaderAccessor.CORRELATION_ID, String.class));
                     return "Receiving message";
                 })
